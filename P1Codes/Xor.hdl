@@ -1,0 +1,19 @@
+//Kevin Tang
+
+/**
+ * Exclusive-or gate:
+ * out = not (a == b)
+ */
+
+CHIP Xor {
+    IN a, b;
+    OUT out;
+
+    PARTS:
+    // not (a == b) = (a or b) and Not(a and b)
+	//not ((not a and not b) or a and b)
+	Or(a = a, b = b, out = abOr);
+	And(a = a, b = b, out = abAnd);
+	Not(in = abAnd, out = notabAnd);
+	And(a = notabAnd, b = abOr, out = out);
+}

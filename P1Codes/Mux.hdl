@@ -1,0 +1,20 @@
+//Kevin Tang
+
+
+/** 
+ * Multiplexor:
+ * out = a if sel == 0
+ *       b otherwise
+ */
+
+CHIP Mux {
+    IN a, b, sel;
+    OUT out;
+
+    PARTS:
+    //b*sel + a * -sel
+	Not(in = sel, out = notSel);
+	And(a = a, b = notSel, out = andA);
+	And(a = b, b = sel, out = andB);
+	Or(a = andA, b = andB, out=out);
+}

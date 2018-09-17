@@ -1,0 +1,19 @@
+//Kevin Tang
+
+/** You cannot get onto the ride if too young and too short, 
+ *  or too odd and have heart disease.
+ */
+
+CHIP Exercise2 {
+    IN tooYoung, tooShort, tooOld, haveHeartDisease;
+    OUT canGetOnRide; //can get onto the ride
+
+    PARTS:
+    //(y * s + o * h)
+	And(a = tooYoung, b = tooShort, out = ys);
+	And(a = tooOld, b = haveHeartDisease, out = oh);
+	Or(a = ys, b = oh, out = orysoh);
+	Not(in = orysoh, out = canGetOnRide);
+	
+
+}

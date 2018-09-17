@@ -1,0 +1,15 @@
+//Kevin Tang
+
+/**
+ * Not gate:
+ * out = not in
+ */
+
+CHIP Not {
+    IN in;
+    OUT out;
+
+    PARTS:
+    // Put your code here:
+	Nor(a = in , b = in, out = out);
+}

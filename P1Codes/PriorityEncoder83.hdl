@@ -1,0 +1,50 @@
+//Kevin Tang
+
+//Priority Encoder
+//input is 8-bit long array
+//output is 3-bit long array
+
+CHIP PriorityEncoder83 {
+	IN a[8];
+	OUT out[3], idle;
+
+	PARTS:
+	Not(in = a[6], out = not6);
+	Not(in = a[5], out = not5);
+	Not(in = a[4], out = not4);
+	Not(in = a[3], out = not3);
+	Not(in = a[2], out = not2);
+
+	//out[2] is true if a[7] or... or a[4] is true
+	Or(a = a[7], b = a[6], out = or76);
+	Or(a = a[5], b = a[4], out = or54);
+	Or(a = or76, b = or54, out = out[2]); //first bit is true
+	
+	//second bit: a[7] or a[6] or (a[3] or a[2] and not a[4] a[5])
+	Or(a = a[3], b = a[2], out = or32);
+	And(a = or32, b = not4, out = or32Not4);
+	And(a = or32Not4, b = not5, out = or32Not4Not5);
+	
+	Or(a = or76, b = or32Not4Not5, out = out[1]);
+	
+	//3rd bit: a[7] or (a[5] and not a[6]) or (a[3] and not a[4] and not a[6]) or (a[1] and not a[2] and not a[4] and not a[6])
+		//5
+	And(a = a[5], b = not6, out = a5Not6);
+	
+		//3
+	And(a = a[3], b = not4, out = a3Not4);
+	And(a = a3Not4, b = not6, out = a3Not4Not6);
+	
+		//1
+	And(a = a[1], b = not2, out = a1Not2);
+	And(a = a1Not2, b = not4, out = a1Not2Not4);
+	And(a = a1Not2Not4, b = not6, out = a1Not2Not4Not6);
+	
+	Or(a = a1Not2Not4Not6, b = a3Not4Not6, out = or31);
+	Or(a = a[7], b = a5Not6, out = or75);
+	Or(a = or75, b = or31, out = out[0]);
+	
+	//idle
+	Or8Way(in = a, out = notidle);
+	Not(in = notidle, out = idle);
+}

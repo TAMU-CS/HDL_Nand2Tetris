@@ -1,0 +1,16 @@
+//Kevin Tang
+
+
+/** A student would fail an exam if he or she spent the previous night studying for the exam, 
+ * or if he or she has not had breakfast before the exam
+ */
+
+CHIP Exercise1 {
+    IN Studied, hadBreakfast; //Studied all night, and have had breakfast 
+    OUT isFailed; //Did the student failed the exam
+
+    PARTS:
+    //(-h + s)
+	Not(in = hadBreakfast, out = notb);
+	Or(a = notb, b = Studied, out = isFailed);
+}

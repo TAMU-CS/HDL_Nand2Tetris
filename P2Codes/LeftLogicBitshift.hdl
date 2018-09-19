@@ -19,9 +19,9 @@ CHIP LeftLogicBitshift {
 	Mux16(a = x1, sel = false, out[0..13] = x1temp);
 	Mux16(a = x1, b[2..15] = x1temp, sel = y[1], out = x2);
 
-	Mux16(a = x2, sel = false, out[0..12] = x2temp);
-	Mux16(a = x2, b[3..15] = x2temp, sel = y[2], out = x3);
+	Mux16(a = x2, sel = false, out[0..11] = x2temp);
+	Mux16(a = x2, b[4..15] = x2temp, sel = y[2], out = x3);
 	
-	Mux16(a = x3, sel = false, out[0..11] = x3temp);
-	Mux16(a = x3, b[4..15] = x3temp, sel = y[3], out = out);	
+	Mux16(a = x3, sel = false, out[0..7] = x3temp);
+	Mux16(a = x3, b[8..15] = x3temp, sel = y[3], out = out);	
 }

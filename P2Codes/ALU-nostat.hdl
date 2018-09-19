@@ -35,6 +35,9 @@ CHIP ALU-nostat {
     OUT 
         out[16]; // 16-bit output
 
-    PARTS:        
+    PARTS:
+	//handle x and y new values
+	Mux16(a = x, sel = zx, out = xnew);
+	Mux16(a = y, sel = )
 
 }

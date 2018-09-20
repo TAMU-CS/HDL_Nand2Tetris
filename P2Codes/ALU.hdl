@@ -1,7 +1,4 @@
-// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/02/ALU.hdl
+//Kevin Tang
 
 /**
  * The ALU (Arithmetic Logic Unit).
@@ -42,6 +39,31 @@ CHIP ALU {
         ng; // 1 if (out < 0),  0 otherwise
 
     PARTS:
-   // Put you code here:
+	//handle x and y new values
+	Mux16(a = x, sel = zx, out = x1); //zero x
+	
+	Not16(in = x1, out = x1not); //not x
+	Mux16(a = x1, b = x1not, sel = nx, out = x2);
+	
+	Mux16(a = y, sel = zy, out = y1); //zero y
+
+	Not16(in = y1, out = y1not); //not y
+	Mux16(a = y1, b = y1not, sel = ny, out = y2);
+	
+	//f (if f == 1 then output x+1, else x & y);
+	Add16(a = x2, b = y2, out = xyadd);
+	And16(a = x2, b = y2, out = xyand);
+	Mux16(a = xyand, b = xyadd, sel = f, out = preout);
+	
+	//no, gives 1's compliment of output
+	Not16(in = preout, out = NotPreOut);
+	Mux16(a = preout, b = NotPreOut, sel = no, out = out, out[15] = ng, out[0..7] = p1, out[8..15] = p2);
+	
+	//check if it is zero
+	Or8Way(in = p1, out = p1or);
+	Or8Way(in = p2, out = p2or);
+	Or(a = p1or, b = p2or, out = nonzero);
+	Not(in = nonzero, out = zr);
+	
    
 }

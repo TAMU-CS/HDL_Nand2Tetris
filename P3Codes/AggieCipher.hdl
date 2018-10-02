@@ -14,7 +14,11 @@ CHIP AggieCipher {
     OUT out[4];
     
 	PARTS:
-    // Put your code here:
+    //use pc and DFF to add 1
+	PC(in[0]=bit0, in[1]=bit1, in[2]=bit2, in[3]=bit3, inc = true, out[0] = bit0, out[1]=bit1, out[2]=bit2, out[3]=bit3);
 	
-	
+	HalfAdder(a = in[0], b = bit0, sum = out[0], carry = carry1);
+	FullAdder(a = in[1], b = bit1, c = carry1, sum = out[1], carry = carry2);
+	FullAdder(a = in[2], b = bit2, c = carry2, sum = out[2], carry = carry3);
+	FullAdder(a = in[3], b = bit3, c = carry3, sum = out[3], carry = carry);
 }

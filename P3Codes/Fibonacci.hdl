@@ -6,5 +6,11 @@ CHIP Fibonacci {
 	OUT out[16];
 
 	PARTS:
-	//Put your code here
+	//
+	Mux16(a = f0, b = reg3, sel = msel, out = toreg1);
+	Register(in=toreg1, load=enable1, out=reg1);
+	Mux16(a=f1, b=reg1, sel=msel, out = toreg2);
+	Register(in=toreg2, load=enable2, out=toadd16a);
+	Add16(a=reg1, b=toadd16a, out = toreg3);
+	Register(in=toreg3, load=enable3, out=reg3, out=out);
 }

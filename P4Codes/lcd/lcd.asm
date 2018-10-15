@@ -2,3 +2,7 @@
 //Assuming RAM[R0] stores the first integer and RAM[R1] stores the second integer
 //RAM[R2] stores the result
 //Write your code here
+
+//recursively subtract from eachother
+(START)
+	@R0

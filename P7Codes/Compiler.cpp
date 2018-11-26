@@ -15,6 +15,7 @@ string processPush(string addr, int index);
 string processAr(string proc);
 string processBool(string boolAr, string flag);
 void processLine(ofstream& hack, string line);
+
 //parser function
 void parser(ifstream& prog, ofstream& hack);
 
@@ -52,17 +53,13 @@ int main(int argc, char *argv[]){
 string processPush(string addr, int index){
 	string ind = to_string(index);
 	
-	return "@" + addr + "\nD=M\n"+
-			"@" + ind + "\n" + "A=D+A\nD=M\n@SP\nA=M\n" +
-			"M=D\n@SP\nM=M+1\n";
-	
+	return "@" + addr + "\nD=M\n@" + ind + "\nA=D+A\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n";
 }
 
 string processPop(string addr, int index){
 	string ind = to_string(index);
 
-	return "@" + addr + "\n" + ind +
-			"@R13\nM=D\n@SP\nAM=M-1\nD=M\n@R13\nA=M\nM=D\n";	
+	return "@" + addr + "\nD=M\n@" + ind + "\nD=D+A\n@R13\nM=D\n@SP\nAM=M-1\nD=M\n@R13\nA=M\nM=D\n";	
 }
 
 string processAr(string proc){ //does arithmetic processes
@@ -70,10 +67,10 @@ string processAr(string proc){ //does arithmetic processes
 }
 
 string processBool(string boolAr, string flag){ //does boolean processes
-	return "@SP\nAM=M-1\nD=M\nA=A-1\nD=M-D\n@FALSE\nD" + boolAr + "\n" +
-			"@SP\nA=M-1\nM=-1\n@C" + flag + "\n" +
-			"0;JMP\n(FALSE" + flag + ")\n" +
-			"@SP\nA=M-1\nM=0\n(C" + flag + ")\n";	
+        return "@SP\nAM=M-1\nD=M\nA=A-1\nD=M-D\n@FALSE" + flag + "\nD;" + boolAr + 
+				"\n@SP\nA=M-1\nM=-1\n@CONTINUE" + flag + "\n0;JMP\n(FALSE" + flag + 
+				")\n@SP\nA=M-1\nM=0\n(CONTINUE" + flag + ")\n";
+
 }
 
 //main line processor
@@ -112,17 +109,17 @@ void processLine(ofstream& hack, string line, int &jumpFlag){
 		}else if(line.substr(4, 7) == "pointer"){
 			int x = stoi(line.substr(11, line.size()));
 			if(x == 0){
-				hack << "@THIS\nD=M\n@\nA=D+A\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n";
+				hack << "@THIS\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n";
 			}else if(x == 1){
-				hack << "@THAT\nD=M\n@\nA=D+A\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n";								
-			}	
+				hack << "@THAT\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n";
+				}	
 		}
 	}else if(line.substr(0, 3) == "pop"){
 		if(line.substr(3, 5) == "local"){
 			int x = stoi(line.substr(8, line.size()));
 			hack << processPop("LCL",x);
-		}else if(line.substr(3, 5) == "argument"){
-			int x = stoi(line.substr(8, line.size()));
+		}else if(line.substr(3, 8) == "argument"){
+			int x = stoi(line.substr(11, line.size()));
 			hack << processPop("ARG", x);
 		}else if(line.substr(3, 4) == "this"){
 			int x = stoi(line.substr(7, line.size()));
@@ -136,10 +133,10 @@ void processLine(ofstream& hack, string line, int &jumpFlag){
 		}else if(line.substr(3, 7) == "pointer"){
 			int x = stoi(line.substr(10, line.size()));
 			if(x == 0){ //this
-				hack << "@THIS\n@R13\nM=D\n@SP\nAM=M-1\nD=M\n@R13\nA=M\nM=D\n";	
+				hack << "@THIS\nD=A\n@R13\nM=D\n@SP\nAM=M-1\nD=M\n@R13\nA=M\nM=D\n";	
 			}else if(x == 1){//that
-				hack << "@THAT\n@R13\nM=D\n@SP\nAM=M-1\nD=M\n@R13\nA=M\nM=D\n";				
-			}	
+				hack << "@THAT\nD=A\n@R13\nM=D\n@SP\nAM=M-1\nD=M\n@R13\nA=M\nM=D\n";									
+			}
 		}else if(line.substr(3, 6) == "static"){
 			int x = stoi(line.substr(9, line.size()));
 			hack << "@STATIC" << x << "\nD=A\n@R13\nM=D\n@SP\nAM=M-1\nD=M\n@R13\nA=M\nM=D\n";
